@@ -22,15 +22,19 @@ public class GameListService {
     private GameRepository gameRepository;
 
     @Transactional(readOnly = true)
-   public List<GameListDTO> findAll() {
+    public List<GameListDTO> findAll() {
         List<GameList> result = gameListRepository.findAll();
-        return result.stream().map(x -> new GameListDTO(x)).toList();
+        return result.stream().map(GameListDTO::new).toList();
     }
-    public void move (Long listId, int sourceIndex, int destinationIndex) {
+
+    @Transactional
+    public void move(Long listId, int sourceIndex, int destinationIndex) {
+
         List<GameMinProjection> list = gameRepository.searchByList(listId);
 
         GameMinProjection obj = list.remove(sourceIndex);
         list.add(destinationIndex, obj);
+
         int min = sourceIndex < destinationIndex ? sourceIndex : destinationIndex;
         int max = sourceIndex < destinationIndex ? destinationIndex : sourceIndex;
 
@@ -39,4 +43,9 @@ public class GameListService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public GameListDTO findById(Long id) {
+        GameList entity = gameListRepository.findById(id).get();
+        return new GameListDTO(entity);
+    }
 }

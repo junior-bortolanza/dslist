@@ -8,6 +8,4 @@ public interface GameMinProjection {
     String getImgUrl();
     String getShortDescription();
     Integer getPosition();
-
-
 }
